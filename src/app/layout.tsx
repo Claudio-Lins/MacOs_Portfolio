@@ -1,6 +1,13 @@
 import { Navbar } from "@/components/navbar";
 import type { Metadata } from "next";
+import { Georama } from "next/font/google";
 import "./globals.css";
+
+const georama = Georama({
+  subsets: ["latin"],
+  variable: "--font-georama",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -14,7 +21,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>
+      <body className={georama.variable}>
         <Navbar />
         {children}
       </body>
