@@ -26,7 +26,7 @@ function setupTextHover(
   container: HTMLDivElement | null,
   type: "title" | "subtitle",
 ) {
-  if (!container) return;
+  if (!container) return () => {};
 
   const target = container;
   const letters = target.querySelectorAll("span");
