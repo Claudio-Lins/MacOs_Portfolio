@@ -15,12 +15,14 @@
     "clsx": "^2.1.1",
     "dayjs": "^1.11.19",
     "gsap": "^3.14.2",
+    "immer": "^11.1.3",
     "lucide-react": "^0.562.0",
     "next": "16.1.4",
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "react-tooltip": "^5.30.0",
-    "tailwind-merge": "^3.4.0"
+    "tailwind-merge": "^3.4.0",
+    "zustand": "^5.0.10"
   },
   "devDependencies": {
     "@biomejs/biome": "2.2.0",
