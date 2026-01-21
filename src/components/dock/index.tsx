@@ -2,6 +2,7 @@
 
 import { dockApps } from "@/constants";
 import { cn } from "@/lib/utils";
+import useWindowStore from "@/store/window";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import Image from "next/image";
@@ -9,18 +10,31 @@ import { useRef } from "react";
 import { Tooltip } from "react-tooltip";
 
 export function Dock() {
+  const { openWindow, closeWindow, windows } = useWindowStore();
   const dockRef = useRef<HTMLDivElement>(null);
+  type WindowKey = Parameters<typeof openWindow>[0];
+  type DockApp = {
+    id: string;
+    name: string;
+    icon: string;
+    canOpen: boolean;
+  };
 
-  useGSAP(() => {
-    const dock = dockRef.current;
-    if (!dock) return;
+  function isWindowKey(value: string): value is WindowKey {
+    return Object.hasOwn(windows, value);
+  }
 
-    const icons = dock.querySelectorAll(".dock-icon-wrapper");
+  useGSAP(function handleDockAnimation() {
+    const dockElement = dockRef.current;
+    if (!dockElement) return;
+    const dockElementCurrent = dockElement as HTMLDivElement;
 
-    const animateIcons = (mouseX: number) => {
-      const { left } = dock.getBoundingClientRect();
+    const icons = dockElementCurrent.querySelectorAll(".dock-icon-wrapper");
 
-      icons.forEach((icon) => {
+    function animateIcons(mouseX: number) {
+      const { left } = dockElementCurrent.getBoundingClientRect();
+
+      icons.forEach(function handleIcon(icon) {
         const { left: iconLeft, width } = icon.getBoundingClientRect();
         const center = iconLeft - left + width / 2;
         const distance = Math.abs(mouseX - center);
@@ -32,14 +46,16 @@ export function Dock() {
           ease: "power1.out",
         });
       });
-    };
-    const handleMouseMove = (e: MouseEvent) => {
-      const { left } = dock.getBoundingClientRect();
+    }
+
+    function handleMouseMove(e: MouseEvent) {
+      const { left } = dockElementCurrent.getBoundingClientRect();
 
       animateIcons(e.clientX - left);
-    };
-    const resetIcons = () =>
-      icons.forEach((icon) => {
+    }
+
+    function resetIcons() {
+      icons.forEach(function handleReset(icon) {
         gsap.to(icon, {
           scale: 1,
           y: 0,
@@ -47,16 +63,29 @@ export function Dock() {
           ease: "power1.out",
         });
       });
-    dock.addEventListener("mousemove", handleMouseMove);
-    dock.addEventListener("mouseleave", resetIcons);
+    }
+    dockElementCurrent.addEventListener("mousemove", handleMouseMove);
+    dockElementCurrent.addEventListener("mouseleave", resetIcons);
 
     return () => {
-      dock.removeEventListener("mousemove", handleMouseMove);
-      dock.removeEventListener("mouseleave", resetIcons);
+      dockElementCurrent.removeEventListener("mousemove", handleMouseMove);
+      dockElementCurrent.removeEventListener("mouseleave", resetIcons);
     };
   }, []);
 
-  function toggleDockApp(app: any) {}
+  function toggleDockApp(app: DockApp) {
+    if (!app.canOpen) return;
+
+    if (!isWindowKey(app.id)) return;
+    const dockWindow = windows[app.id];
+    if (dockWindow.isOpen) {
+      closeWindow(app.id);
+    } else {
+      openWindow(app.id);
+    }
+
+    console.log(windows);
+  }
 
   return (
     <section id="dock" ref={dockRef} className={cn("")}>
