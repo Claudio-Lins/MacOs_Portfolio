@@ -15,7 +15,7 @@ export function Dock() {
     const dock = dockRef.current;
     if (!dock) return;
 
-    const icons = dock.querySelectorAll(".dock-icon");
+    const icons = dock.querySelectorAll(".dock-icon-wrapper");
 
     const animateIcons = (mouseX: number) => {
       const { left } = dock.getBoundingClientRect();
@@ -62,7 +62,7 @@ export function Dock() {
     <section id="dock" ref={dockRef} className={cn("")}>
       <div className="dock-container">
         {dockApps.map((dock) => (
-          <div key={dock.id} className="dock-icon">
+          <div key={dock.id} className="dock-icon-wrapper">
             <Tooltip id={dock.name} className="tooltip" />
             <button
               type="button"

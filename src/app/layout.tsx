@@ -1,4 +1,3 @@
-import { Dock } from "@/components/dock";
 import { Navbar } from "@/components/navbar";
 import type { Metadata } from "next";
 import { Georama } from "next/font/google";
